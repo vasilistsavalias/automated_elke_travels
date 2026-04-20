@@ -1,0 +1,14 @@
+# Local reference data (not committed)
+verification_*/
+reference_*/
+
+# Local workspaces and run outputs (not committed)
+conductor/
+.venv/
+recent_*/
+workspace_*/
+run_*/
+artifacts_*/
+output_*/
+.codex/
+debate.md
