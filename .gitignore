@@ -12,3 +12,7 @@ artifacts_*/
 output_*/
 .codex/
 debate.md
+
+# Public source of truth for distributable skill packs
+!skills/
+!skills/**

@@ -1,0 +1,77 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://elke.local/schemas/schema_compliance_report.schema.json",
+    "title": "Schema Compliance Report",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "generated_at",
+        "agent_role",
+        "overall_status",
+        "checks",
+        "failed_checks",
+        "notes"
+    ],
+    "properties": {
+        "schema_version": {
+            "type": "string",
+            "const": "1.0"
+        },
+        "generated_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "agent_role": {
+            "type": "string",
+            "const": "schema_validator"
+        },
+        "overall_status": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL"
+            ]
+        },
+        "checks": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "reviewer_report_present",
+                "reviewer_schema_valid",
+                "comparator_required",
+                "comparator_report_present",
+                "comparator_schema_valid"
+            ],
+            "properties": {
+                "reviewer_report_present": {
+                    "type": "boolean"
+                },
+                "reviewer_schema_valid": {
+                    "type": "boolean"
+                },
+                "comparator_required": {
+                    "type": "boolean"
+                },
+                "comparator_report_present": {
+                    "type": "boolean"
+                },
+                "comparator_schema_valid": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "failed_checks": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "notes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

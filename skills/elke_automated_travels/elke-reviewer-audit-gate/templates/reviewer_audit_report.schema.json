@@ -1,0 +1,141 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://elke.local/schemas/reviewer_audit_report.schema.json",
+    "title": "Reviewer Audit Report",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "generated_at",
+        "agent_role",
+        "overall_status",
+        "checks",
+        "blocker_count",
+        "blockers",
+        "warning_count",
+        "warnings",
+        "recommendations"
+    ],
+    "properties": {
+        "schema_version": {
+            "type": "string",
+            "const": "1.0"
+        },
+        "generated_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "agent_role": {
+            "type": "string",
+            "const": "reviewer"
+        },
+        "overall_status": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL"
+            ]
+        },
+        "checks": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "required_files_present",
+                "file_count_consistency",
+                "manual_review_queue_valid",
+                "submission_artifacts_present",
+                "trace_references_valid",
+                "shared_expense_prompt_rule_applied"
+            ],
+            "properties": {
+                "required_files_present": {
+                    "type": "boolean"
+                },
+                "file_count_consistency": {
+                    "type": "boolean"
+                },
+                "manual_review_queue_valid": {
+                    "type": "boolean"
+                },
+                "submission_artifacts_present": {
+                    "type": "boolean"
+                },
+                "trace_references_valid": {
+                    "type": "boolean"
+                },
+                "shared_expense_prompt_rule_applied": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "blocker_count": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "blockers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "severity",
+                    "message",
+                    "artifact"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "critical",
+                            "high",
+                            "medium"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "artifact": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "warning_count": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "warnings": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "message",
+                    "artifact"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "artifact": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "recommendations": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

@@ -1,10 +1,46 @@
-# Travel Reimbursement Automation
+# Universal AI Skills: ELKE Travel Reimbursement Pack
 
-This repository implements a skills-first workflow that transforms mixed travel evidence (receipts, statements, invoices, tickets, images, PDFs) into a deterministic reimbursement package.
+This repository is a **tool-agnostic skills distribution**.  
+It provides reusable skill definitions that can guide **any AI agent runtime** (Codex, Claude-based agents, OpenAI Agents SDK pipelines, custom orchestrators, or internal agent frameworks).
 
-## Output Contract
+The included pack focuses on ELKE-style travel reimbursement processing.
 
-Final `output_root/` must contain exactly:
+## What A Skill Pack Contains
+
+Each skill pack is implementation guidance, not app code:
+
+- `SKILL.md`: role, inputs, outputs, rules, handoff contracts
+- `templates/`: schemas/checklists/report templates used by gates
+- `system-prompts/`: role-specific behavior prompts for orchestration/subagents
+- `plan.md`: flow and stage connectivity
+
+## Included Skills (ELKE Pack)
+
+- `elke-orchestrator`: top-level sequencing and contract enforcement
+- `elke-intake-noise-triage`: inventory, type triage, duplicate grouping
+- `elke-doc-extraction-normalization`: normalized field extraction with confidence
+- `elke-evidence-matching-reconciliation`: receipt/payment matching and confidence rationale
+- `elke-package-assembly-quality-gates`: deterministic final package + register assembly
+- `elke-reviewer-audit-gate`: independent reviewer PASS/FAIL gate
+- `elke-baseline-comparator`: optional baseline parity checks
+- `elke-schema-compliance-check`: schema validation of reviewer/comparator outputs
+
+## Subagent Roles
+
+The workflow is intentionally decomposed so any agent system can run it with role-specialized workers:
+
+- `Orchestrator`: stage ordering, dependency management, final contract enforcement
+- `Intake subagent`: reads noisy input and emits structured inventory/triage artifacts
+- `Extraction subagent`: converts evidence into normalized records and warning queues
+- `Matching subagent`: links expenses to payment proof with explainable confidence
+- `Packaging subagent`: creates strict final folder layout + expense workbook
+- `Reviewer subagent`: checks completeness, consistency, and blocker/warning state
+- `Comparator subagent`: checks current output against a baseline (when provided)
+- `Schema validator subagent`: validates gate reports against JSON schemas
+
+## Final Output Contract (ELKE)
+
+The final output folder must contain exactly:
 
 - `airplane/`
 - `food/`
@@ -15,66 +51,55 @@ Final `output_root/` must contain exactly:
 
 No extra files/folders are allowed in final output.
 
-## Workflow Stages
+## Runtime Compatibility (Works With Everything)
 
-1. Intake + noise triage
-2. Extraction + normalization
-3. Evidence matching + reconciliation
-4. Package assembly
-5. Reviewer audit gate
-6. Schema compliance gate
+This repository is not tied to one vendor.
 
-Orchestrator and stage skills live in:
+- Codex-style runtimes: map `skills/` into your local skill discovery path (for example `.codex/skills/...`).
+- Other runtimes: import/copy the same `skills/` tree and wire each `SKILL.md` as an agent task spec.
+- Custom orchestrators: use `plan.md` plus templates/schemas as machine-checkable stage contracts.
 
-- `.codex/skills/elke_automated_travels/`
-- `.codex/skills/elke_automated_travels/plan.md`
-
-## Quick Start (Local)
-
-1. Create/activate a venv.
-2. Install dependencies used by the local runner:
-   `pypdf`, `pdfplumber`, `openpyxl`, `pillow`, `pymupdf`, `jsonschema`
-3. Prepare:
-   - `input_root/` with raw evidence files
-   - `artifacts_root/` for intermediate outputs
-   - `output_root/` for final package
-4. Run the local pipeline script (current reference implementation):
-   `workspace_skg_rhodes/elke_pipeline.py`
-5. Validate:
-   - reviewer report is PASS
-   - schema report is PASS
-   - final `output_root/` matches the strict contract
-
-## Spreadsheet Rules
-
-- `proof_status` values: `Both`, `Statement`, `Receipt`, `Group Receipt`
-- For non-travel categories with `amount >= 50 EUR`, `your_share_eur` is set to `ENTER YOUR SHARE` (bold red).
-- A final `TOTAL` row is appended:
-  - `amount` total formula over all expense rows
-  - `your_share_eur` total formula (updates as share cells are filled)
-
-## First Publish Checklist
-
-- Ensure no personal input/output artifacts are tracked (see `.gitignore`).
-- Verify README links and paths resolve.
-- Include a license file.
-- Confirm one reproducible local run command is documented.
-- Optional but recommended: add `CONTRIBUTING.md` and release tags/changelog policy.
-
-## Repository Layout
+## Repository Structure
 
 ```text
-project-root/
-|-- .codex/
-|   `-- skills/
-|       `-- elke_automated_travels/
-|-- AGENTS.md
-|-- README.md
+.
 |-- LICENSE
-`-- .gitignore
+|-- README.md
+|-- .gitignore
+`-- skills/
+    `-- elke_automated_travels/
+        |-- plan.md
+        |-- system-prompts/
+        |   |-- main-agent-system.md
+        |   |-- intake-subagent-system.md
+        |   |-- extraction-subagent-system.md
+        |   |-- matching-subagent-system.md
+        |   |-- packaging-subagent-system.md
+        |   |-- reviewer-subagent-system.md
+        |   |-- comparator-subagent-system.md
+        |   `-- schema-validator-subagent-system.md
+        |-- elke-orchestrator/SKILL.md
+        |-- elke-intake-noise-triage/SKILL.md
+        |-- elke-doc-extraction-normalization/SKILL.md
+        |-- elke-evidence-matching-reconciliation/SKILL.md
+        |-- elke-package-assembly-quality-gates/SKILL.md
+        |-- elke-reviewer-audit-gate/
+        |   |-- SKILL.md
+        |   `-- templates/
+        |       |-- reviewer_checklist.md
+        |       `-- reviewer_audit_report.schema.json
+        |-- elke-baseline-comparator/
+        |   |-- SKILL.md
+        |   `-- templates/
+        |       |-- comparator_checklist.md
+        |       `-- baseline_comparison_report.schema.json
+        `-- elke-schema-compliance-check/
+            |-- SKILL.md
+            `-- templates/
+                |-- schema_validation_checklist.md
+                `-- schema_compliance_report.schema.json
 ```
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0.
-See `LICENSE`.
+GNU General Public License v3.0. See `LICENSE`.

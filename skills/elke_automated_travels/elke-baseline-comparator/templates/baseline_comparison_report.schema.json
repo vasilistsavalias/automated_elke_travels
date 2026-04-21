@@ -1,0 +1,149 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://elke.local/schemas/baseline_comparison_report.schema.json",
+    "title": "Baseline Comparison Report",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "schema_version",
+        "generated_at",
+        "agent_role",
+        "verdict",
+        "input_parity",
+        "contract_parity",
+        "output_parity",
+        "divergence_count",
+        "divergences",
+        "summary"
+    ],
+    "properties": {
+        "schema_version": {
+            "type": "string",
+            "const": "1.0"
+        },
+        "generated_at": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "agent_role": {
+            "type": "string",
+            "const": "comparator"
+        },
+        "verdict": {
+            "type": "string",
+            "enum": [
+                "exact_same",
+                "structurally_equivalent_but_content_divergent",
+                "divergent"
+            ]
+        },
+        "input_parity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "baseline_file_count",
+                "output_raw_file_count",
+                "extension_distribution_parity",
+                "hash_multiset_parity"
+            ],
+            "properties": {
+                "baseline_file_count": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "output_raw_file_count": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "extension_distribution_parity": {
+                    "type": "boolean"
+                },
+                "hash_multiset_parity": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "contract_parity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "required_structure_present",
+                "required_artifacts_present"
+            ],
+            "properties": {
+                "required_structure_present": {
+                    "type": "boolean"
+                },
+                "required_artifacts_present": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "output_parity": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "normalized_evidence_parity",
+                "submission_artifacts_parity",
+                "notes"
+            ],
+            "properties": {
+                "normalized_evidence_parity": {
+                    "type": "boolean"
+                },
+                "submission_artifacts_parity": {
+                    "type": "boolean"
+                },
+                "notes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "divergence_count": {
+            "type": "integer",
+            "minimum": 0
+        },
+        "divergences": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "level",
+                    "message",
+                    "baseline_path",
+                    "output_path"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "level": {
+                        "type": "string",
+                        "enum": [
+                            "input",
+                            "contract",
+                            "output"
+                        ]
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "baseline_path": {
+                        "type": "string"
+                    },
+                    "output_path": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "summary": {
+            "type": "string"
+        }
+    }
+}
